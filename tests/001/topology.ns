@@ -1,0 +1,36 @@
+# This is a simple ns script. Comments start with #.
+set ns [new Simulator]                 
+source tb_compat.tcl
+
+# we need a control host to anchor the tests
+set control [$ns node]
+set aa [$ns node]
+set bb [$ns node]
+set cc [$ns node]
+set dd [$ns node]
+
+set link0 [$ns duplex-link $aa $bb 30Mb 50ms DropTail]
+tb-set-link-loss $link0 0.20
+
+set lan0 [$ns make-lan "$control $bb $cc $dd" 100Mb 0ms]
+
+tb-set-node-os $control test-base-20160419
+tb-set-node-startcmd $control "sudo python /share/magi/current/magi_bootstrap.py"
+
+tb-set-node-os $aa test-base-20160419
+tb-set-node-startcmd $aa "sudo python /share/magi/current/magi_bootstrap.py"
+
+tb-set-node-os $bb test-base-20160419
+tb-set-node-startcmd $bb "sudo python /share/magi/current/magi_bootstrap.py"
+
+tb-set-node-os $cc test-base-20160419
+tb-set-node-startcmd $cc "sudo python /share/magi/current/magi_bootstrap.py"
+
+tb-set-node-os $dd test-base-20160419
+tb-set-node-startcmd $dd "sudo python /share/magi/current/magi_bootstrap.py"
+
+$ns rtproto Static
+
+# Go!
+$ns run
+

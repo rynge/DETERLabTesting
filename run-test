@@ -1,0 +1,66 @@
+#!/bin/bash
+
+set -e
+
+# Arguments. Example: ./run-test mrynge pegasus 001
+DETER_USER=$1
+DETER_PROJECT=$2
+TEST=$3
+
+TOP_DIR=`pwd`
+DETER_USERS_HOST="users.isi.deterlab.net"
+DETER_SSH_OPTS="-o StrictHostKeyChecking=no"
+
+DETER_SSH="ssh $DETER_USER@$DETER_USERS_HOST"
+
+# fill in the templates
+for TEMPLATE in `find . -name \*.template`; do
+    TARGET=`echo "$TEMPLATE" | sed 's/\.template$//'`
+    echo " ... setting up $TARGET from the template $TEMPLATE"
+    cp -a $TEMPLATE $TARGET
+    perl -p -i -e "s/\\[\\[DETER_USER\\]\\]/$DETER_USER/g" $TARGET
+done
+
+# create all the agent tarballs
+for TID in `cd tests && ls`; do
+    cd $TOP_DIR/tests/$TID/agents
+    for AGENT in bb; do
+        (cd $AGENT; tar czf ../$AGENT.tar.gz .)
+    done
+done
+
+# copy over files 
+cd $TOP_DIR
+mkdir -p reports/$TEST
+$DETER_SSH "rm -rf DETERLabTesting ; mkdir DETERLabTesting"
+scp -q -r . $DETER_USER@$DETER_USERS_HOST:DETERLabTesting/
+
+# fix permissions
+$DETER_SSH "chmod 777 DETERLabTesting/reports/$TEST"
+
+echo
+echo
+echo "#################################################"
+echo "## Running test $TEST ..."
+echo
+
+# kill old projects
+$DETER_SSH ". .profile && endexp -N -w $DETER_PROJECT test-$TEST >/dev/null 2>&1" || true
+
+echo "Deploying topology..."
+$DETER_SSH ". .profile && cd DETERLabTesting/tests/$TEST && startexp -N -w -i -a 120 -l 30 -E 'Test 001' -p $DETER_PROJECT -e test-$TEST topology.ns"
+
+# do we need to wait for things to settle down?
+echo "Waiting for topology to be fully set up..."
+sleep 2m
+
+# run the orchestrator run
+$DETER_SSH "ssh $DETER_SSH_OPTS control.test-$TEST.pegasus \"cd DETERLabTesting/tests/$TEST && /share/magi/current/magi_orchestrator.py --nocolor --project pegasus --experiment test-$TEST --events tests.aal\"" || true
+
+# get the results
+scp -r $DETER_USER@$DETER_USERS_HOST:DETERLabTesting/reports/* reports/
+
+# cleanup
+$DETER_SSH ". .profile && endexp -N -w $DETER_PROJECT test-$TEST"
+
+

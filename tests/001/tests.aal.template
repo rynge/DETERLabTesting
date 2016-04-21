@@ -1,0 +1,42 @@
+
+## The agent implementation and addressing information 
+agents:
+  bb_agent:
+    group: bb_group
+    path: /users/[[DETER_USER]]/DETERLabTesting/tests/001/agents/bb.tar.gz
+    execargs: []
+
+## The mapping from the AAL procedure to the experiment apparatus 
+groups:
+  bb_group: [bb]
+
+streamstarts: [ main, cleanup ]
+
+eventstreams:
+
+  main: 
+
+      - type: event
+        agent: bb_agent 
+        trigger: config_done
+        method: setConfiguration
+        args:
+            report_dir: /users/[[DETER_USER]]/DETERLabTesting/reports/001
+
+      - type: trigger
+        triggers: [{event: config_done, agent: bb_agent}]
+
+      - type: event
+        agent: bb_agent 
+        method: test001
+        trigger: test001_complete
+        args: {}
+
+
+  cleanup:
+      - type: trigger
+        triggers: [ {event: test001_complete, target: exit} ] 
+
+
+################################################
+
