@@ -23,7 +23,7 @@ except ImportError:
     import unittest
 
 
-#logging.basicConfig(stream=sys.stderr)
+logging.basicConfig(stream=sys.stdout)
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 
@@ -48,6 +48,7 @@ class bb(DispatchAgent):
     def test001(self, msg):
         log.info("About to start unit tests...")
         log.info(" ... writing test results to: " + self.report_dir)
+        print("Testing stdout!")
         try:
             stream = StringIO.StringIO()
             suite = unittest.TestLoader().loadTestsFromTestCase(Tests)
@@ -86,6 +87,13 @@ class Tests(unittest.TestCase):
     def test_reachability_dd(self):
         rc, msg, loss = ping("dd")
         if rc != 0 or loss > 0:
+            self.fail(msg)
+        pass
+
+    
+    def test_reachability_outside(self):
+        rc, msg, loss = ping("128.9.128.127")
+        if re.match("Destination Host Unreachable", msg, re.MULTILINE) is None:
             self.fail(msg)
         pass
 
@@ -164,12 +172,7 @@ def ping(host):
 if __name__ == '__main__':
     logging.basicConfig(stream=sys.stderr)
     logging.getLogger(__name__).setLevel(logging.DEBUG)
-    #unittest.main(testRunner=xmlrunner.XMLTestRunner(output='reports'))
-    #thr = threading.Thread(target=unittest.main, kwargs={"exit":False})
-    #thr.start()
-    #thr.join()
     suite = unittest.TestLoader().loadTestsFromTestCase(Tests)
     unittest.TextTestRunner(verbosity=2).run(suite)
-    log.info("Yay! We got to the end!")
 
 

@@ -32,6 +32,7 @@ done
 # copy over files 
 cd $TOP_DIR
 mkdir -p reports/$TEST
+rm -f reports/$TEST/*.xml >/dev/null 2>&1 || true
 $DETER_SSH "rm -rf DETERLabTesting ; mkdir DETERLabTesting"
 scp -q -r . $DETER_USER@$DETER_USERS_HOST:DETERLabTesting/
 
