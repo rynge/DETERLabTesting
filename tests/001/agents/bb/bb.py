@@ -93,7 +93,7 @@ class Tests(unittest.TestCase):
     
     def test_reachability_outside(self):
         rc, msg, loss = ping("128.9.128.127")
-        if re.match("Destination Host Unreachable", msg, re.MULTILINE) is None:
+        if re.search("Destination Host Unreachable", msg, re.MULTILINE) is None:
             self.fail(msg)
         pass
 
