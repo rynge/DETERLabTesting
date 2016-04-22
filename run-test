@@ -24,7 +24,7 @@ done
 # create all the agent tarballs
 for TID in `cd tests && ls`; do
     cd $TOP_DIR/tests/$TID/agents
-    for AGENT in bb; do
+    for AGENT in bb peers; do
         (cd $AGENT; tar czf ../$AGENT.tar.gz .)
     done
 done
