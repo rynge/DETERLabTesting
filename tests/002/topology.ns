@@ -12,7 +12,7 @@ set dd [$ns node]
 set link0 [$ns duplex-link $aa $bb 30Mb 50ms DropTail]
 tb-set-link-loss $link0 0.10
 
-set lan0 [$ns make-lan "$control $bb $cc $dd" 100Mb 0ms]
+set lan0 [$ns make-lan "$control $bb $cc $dd" 100Mb 10ms]
 
 tb-set-node-os $control test-base-20160419
 tb-set-node-startcmd $control "sudo python /share/magi/current/magi_bootstrap.py"
