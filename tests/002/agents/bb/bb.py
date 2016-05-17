@@ -63,7 +63,7 @@ class bb(DispatchAgent):
 class Tests(unittest.TestCase):
 
 
-    def test_reachability_aa(self):
+    def test002_reachability_aa(self):
         rc, msg, loss = ping("aa", count=200)
         # link should have 10% packet loss
         if rc != 0 or loss < 5 or loss > 25:
@@ -71,35 +71,35 @@ class Tests(unittest.TestCase):
         pass
 
 
-    def test_reachability_bb(self):
+    def test002_reachability_bb(self):
         rc, msg, loss = ping("bb")
         if rc != 0 or loss > 0:
             self.fail(msg)
         pass
 
 
-    def test_reachability_cc(self):
+    def test002_reachability_cc(self):
         rc, msg, loss = ping("cc")
         if rc != 0 or loss > 0:
             self.fail(msg)
         pass
 
 
-    def test_reachability_dd(self):
+    def test002_reachability_dd(self):
         rc, msg, loss = ping("dd")
         if rc != 0 or loss > 0:
             self.fail(msg)
         pass
 
     
-    def test_reachability_outside(self):
+    def test002_reachability_outside(self):
         rc, msg, loss = ping("128.9.128.127")
         if re.search("Destination Host Unreachable", msg, re.MULTILINE) is None:
             self.fail(msg)
         pass
    
     
-    def test_bw_aa(self):
+    def test002_bw_aa(self):
         rc, msg, bw_mb = bw("aa")
         # the link has packet loss, so a lower bw is expected
         if rc != 0 or bw_mb < 0.2 or bw_mb > 40:
@@ -107,14 +107,14 @@ class Tests(unittest.TestCase):
         pass
 
 
-    def test_bw_cc(self):
+    def test002_bw_cc(self):
         rc, msg, bw_mb = bw("cc")
         if rc != 0 or bw_mb < 80 or bw_mb > 110:
             self.fail(msg)
         pass
 
 
-    def test_bw_dd(self):
+    def test002_bw_dd(self):
         rc, msg, bw_mb = bw("dd")
         if rc != 0 or bw_mb < 80 or bw_mb > 110:
             self.fail(msg)
