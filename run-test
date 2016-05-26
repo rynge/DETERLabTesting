@@ -14,10 +14,10 @@ DETER_SSH_OPTS="-o StrictHostKeyChecking=no"
 DETER_SSH="ssh $DETER_USER@$DETER_USERS_HOST"
 
 # fill in the templates
-for TEMPLATE in `find . -name \*.template`; do
+for TEMPLATE in `find . -name \*.template | sort`; do
     TARGET=`echo "$TEMPLATE" | sed 's/\.template$//'`
-    echo " ... setting up $TARGET from the template $TEMPLATE"
     cp -a $TEMPLATE $TARGET
+    echo " ... setting up $TARGET from the template $TEMPLATE"
     perl -p -i -e "s/\\[\\[DETER_USER\\]\\]/$DETER_USER/g" $TARGET
 done
 
