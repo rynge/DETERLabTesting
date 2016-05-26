@@ -1,0 +1,70 @@
+
+## The agent implementation and addressing information 
+agents:
+
+  node0_agent:
+    group: node0_group
+    path: /users/mrynge/DETERLabTesting/tests/003/agents/node0.tar.gz
+    execargs: []
+
+  peers_agent:
+    group: peers_group
+    path: /users/mrynge/DETERLabTesting/tests/003/agents/peers.tar.gz
+    execargs: []
+
+## The mapping from the AAL procedure to the experiment apparatus 
+groups:
+
+  node0_group: [node-0]
+
+  peers_group: [node-1, node-2, node-3, node-4]
+
+streamstarts: [main, peers, cleanup]
+
+eventstreams:
+
+  main: 
+
+      - type: event
+        agent: node0_agent 
+        trigger: config_done
+        method: setConfiguration
+        args:
+            report_dir: /users/mrynge/DETERLabTesting/reports/003
+
+      - type: trigger
+        triggers: [{event: config_done, agent: node0_agent}]
+      
+      - type: trigger
+        triggers: [{event: iperf_started}]
+
+      - type: event
+        agent: node0_agent 
+        method: test003
+        trigger: test003_complete
+        args: {}
+
+  peers:
+
+      - type: event
+        agent: peers_agent 
+        method: start_iperf
+        trigger: iperf_started
+        args: {}
+      
+      - type: trigger
+        triggers: [{event: test003_complete}]
+      
+      - type: event
+        agent: peers_agent 
+        method: stop_iperf
+        trigger: iperf_stopped
+        args: {}
+
+  cleanup:
+      - type: trigger
+        triggers: [ {event: iperf_stopped, target: exit} ] 
+
+
+################################################
+

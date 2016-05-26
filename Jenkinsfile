@@ -14,5 +14,10 @@ node {
    sh "./run-test mrynge pegasus 002"
    step([$class: 'JUnitResultArchiver', keepLongStdio: true, testResults: 'reports/002/*.xml'])
    
+   // 003
+   stage '003'
+   sh "./run-test mrynge pegasus 003"
+   step([$class: 'JUnitResultArchiver', keepLongStdio: true, testResults: 'reports/003/*.xml'])
+
 }
 

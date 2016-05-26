@@ -24,7 +24,7 @@ done
 # create all the agent tarballs
 for TID in `cd tests && ls`; do
     cd $TOP_DIR/tests/$TID/agents
-    for AGENT in bb peers; do
+    for AGENT in `ls | grep -v tar.gz`; do
         (cd $AGENT; tar czf ../$AGENT.tar.gz .)
     done
 done
@@ -49,13 +49,18 @@ echo
 $DETER_SSH ". .profile && endexp -N -w $DETER_PROJECT test-$TEST >/dev/null 2>&1" || true
 
 echo "Deploying topology..."
-$DETER_SSH ". .profile && cd DETERLabTesting/tests/$TEST && startexp -N -w -i -a 120 -l 30 -E 'Test 001' -p $DETER_PROJECT -e test-$TEST topology.ns"
+$DETER_SSH ". .profile && cd DETERLabTesting/tests/$TEST && startexp -N -w -i -a 120 -l 30 -E 'DeterLab validation test $TEST' -p $DETER_PROJECT -e test-$TEST topology.ns"
 
 # do we need to wait for things to settle down?
 echo "Waiting for topology to be fully set up..."
 sleep 2m
 
+# get some basic exp info
+echo
+$DETER_SSH ". .profile && cd DETERLabTesting/tests/$TEST && expinfo -a $DETER_PROJECT test-$TEST"
+
 # run the orchestrator run
+echo
 $DETER_SSH "ssh $DETER_SSH_OPTS control.test-$TEST.pegasus \"cd DETERLabTesting/tests/$TEST && /share/magi/current/magi_orchestrator.py --nocolor --project pegasus --experiment test-$TEST --events tests.aal\"" || true
 
 # get the results

@@ -1,0 +1,36 @@
+
+set ns [new Simulator]
+source tb_compat.tcl
+
+# Change this to a number of nodes you want
+set NODES 5
+
+# we need a control host to anchor the tests
+set control [$ns node]
+tb-set-node-os $control test-base-20160419
+tb-set-node-startcmd $control "sudo python /share/magi/current/magi_bootstrap.py"
+
+set node(0) [$ns node]
+tb-set-node-os $node(0) test-base-20160419
+tb-set-node-startcmd $node(0) "sudo python /share/magi/current/magi_bootstrap.py"
+
+for {set i 1} {$i < $NODES} {incr i} {
+    set node($i) [$ns node]
+    tb-set-node-os $node($i) test-base-20160419
+    tb-set-node-startcmd $node($i) "sudo python /share/magi/current/magi_bootstrap.py"
+    set lastindex [expr $i-1]
+
+    # Change BW and delay if you want
+    set Link$i [$ns duplex-link $node($i) $node($lastindex) 100Mb 0ms DropTail]
+}
+
+set lastindex [expr $i-1]
+
+# Change BW and delay if you want
+set Link$i [$ns duplex-link $node(0) $control 100Mb 0ms DropTail]
+set i [expr $i+1]
+set Link$i [$ns duplex-link $control $node($lastindex) 100Mb 0ms DropTail]
+
+$ns rtproto Static
+$ns run
+
