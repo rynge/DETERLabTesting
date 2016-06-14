@@ -51,7 +51,7 @@ class bb(DispatchAgent):
         print("Testing stdout!")
         try:
             stream = StringIO.StringIO()
-            suite = unittest.TestLoader().loadTestsFromTestCase(Tests)
+            suite = unittest.TestLoader().loadTestsFromTestCase(Test001)
             xmlrunner.XMLTestRunner(stream=stream, output=self.report_dir).run(suite)
             stream.seek(0)
             log.info(stream.read())
@@ -214,6 +214,6 @@ if __name__ == '__main__':
     logging.basicConfig(stream=sys.stderr)
     logging.getLogger(__name__).setLevel(logging.DEBUG)
     suite = unittest.TestLoader().loadTestsFromTestCase(Test001)
-    unittest.TextTestRunner(verbosity=1).run(suite)
+    unittest.TextTestRunner(verbosity=2).run(suite)
 
 
