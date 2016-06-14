@@ -53,7 +53,7 @@ $DETER_SSH ". .profile && cd DETERLabTesting/tests/$TEST && startexp -N -w -i -a
 
 # do we need to wait for things to settle down?
 echo "Waiting for topology to be fully set up..."
-sleep 2m
+sleep 4m
 
 # get some basic exp info
 echo
