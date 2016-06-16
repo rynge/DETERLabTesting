@@ -104,7 +104,7 @@ class Test001(unittest.TestCase):
     def test_bw_aa_30MbExpected(self):
         rc, msg, bw_mb = bw("aa")
         # the link has packet loss, so a lower bw is expected
-        if rc != 0 or bw_mb < 0.2 or bw_mb > 40:
+        if rc != 0 or bw_mb < 0.1 or bw_mb > 40:
             self.fail(msg)
         pass
 
