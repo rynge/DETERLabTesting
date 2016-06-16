@@ -175,7 +175,7 @@ class MyCommand(object):
         return self._process.returncode
 
 
-def ping(host, count=10):
+def ping(host, count=30):
     cmd = MyCommand("ping -i 0.2 -c " + str(count) + " " + host)
     cmd.run()
     if cmd.get_exit_code() != 0:
@@ -193,7 +193,7 @@ def ping(host, count=10):
 
 
 def bw(host):
-    cmd = MyCommand("iperf -i 120 -t 30 -f m -c " + host)
+    cmd = MyCommand("iperf -i 120 -t 60 -f m -c " + host)
     cmd.run()
     if cmd.get_exit_code() != 0:
         return cmd.get_exit_code(), cmd.get_outerr(), 0

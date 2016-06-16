@@ -1,9 +1,5 @@
 #!/usr/bin/env python
     
-from magi.util.agent import DispatchAgent, agentmethod
-from magi.util.execl import run, pipeIn
-from magi.util.processAgent import initializeProcessAgent
-
 import errno
 import logging
 import os
@@ -28,42 +24,48 @@ log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 
 
-# the getAgent() method must be defined somewhere for all agents.
-# The Magi daemon invokes this mehod to get a reference to an
-# agent. It uses this reference to run and interact with an agent
-# instance.
-def getAgent(**kwargs):
-    agent = bb()
-    agent.setConfiguration(None, **kwargs)
-    return agent
+# allow the test to be run by hand for development
+if __name__ != '__main__':
+    from magi.util.agent import DispatchAgent, agentmethod
+    from magi.util.execl import run, pipeIn
+    from magi.util.processAgent import initializeProcessAgent
+
+    # the getAgent() method must be defined somewhere for all agents.
+    # The Magi daemon invokes this mehod to get a reference to an
+    # agent. It uses this reference to run and interact with an agent
+    # instance.
+    def getAgent(**kwargs):
+        agent = bb()
+        agent.setConfiguration(None, **kwargs)
+        return agent
+    
+    
+    class bb(DispatchAgent):
+        def __init__(self):
+            DispatchAgent.__init__(self)
+            # usually replaced by an "arg" from the agent
+            self.report_dir = "/tmp"
+    
+        @agentmethod()
+        def test002(self, msg):
+            log.info("About to start unit tests...")
+            log.info(" ... writing test results to: " + self.report_dir)
+            print("Testing stdout!")
+            try:
+                stream = StringIO.StringIO()
+                suite = unittest.TestLoader().loadTestsFromTestCase(Test002)
+                xmlrunner.XMLTestRunner(stream=stream, output=self.report_dir).run(suite)
+                stream.seek(0)
+                log.info(stream.read())
+            except Exception, err:
+                log.exception(err)
+            log.info("Done with the unit tests")
 
 
-class bb(DispatchAgent):
-    def __init__(self):
-        DispatchAgent.__init__(self)
-        # usually replaced by an "arg" from the agent
-        self.report_dir = "/tmp"
-
-    @agentmethod()
-    def test002(self, msg):
-        log.info("About to start unit tests...")
-        log.info(" ... writing test results to: " + self.report_dir)
-        print("Testing stdout!")
-        try:
-            stream = StringIO.StringIO()
-            suite = unittest.TestLoader().loadTestsFromTestCase(Tests)
-            xmlrunner.XMLTestRunner(stream=stream, output=self.report_dir).run(suite)
-            stream.seek(0)
-            log.info(stream.read())
-        except Exception, err:
-            log.exception(err)
-        log.info("Done with the unit tests")
+class Test002(unittest.TestCase):
 
 
-class Tests(unittest.TestCase):
-
-
-    def test002_reachability_aa(self):
+    def test_reachability_aa(self):
         rc, msg, loss = ping("aa", count=200)
         # link should have 10% packet loss
         if rc != 0 or loss < 5 or loss > 25:
@@ -71,52 +73,52 @@ class Tests(unittest.TestCase):
         pass
 
 
-    def test002_reachability_bb(self):
+    def test_reachability_bb(self):
         rc, msg, loss = ping("bb")
         if rc != 0 or loss > 0:
             self.fail(msg)
         pass
 
 
-    def test002_reachability_cc(self):
+    def test_reachability_cc(self):
         rc, msg, loss = ping("cc")
         if rc != 0 or loss > 0:
             self.fail(msg)
         pass
 
 
-    def test002_reachability_dd(self):
+    def test_reachability_dd(self):
         rc, msg, loss = ping("dd")
         if rc != 0 or loss > 0:
             self.fail(msg)
         pass
 
     
-    def test002_reachability_outside(self):
+    def test_reachability_outside(self):
         rc, msg, loss = ping("128.9.128.127")
         if re.search("Destination Host Unreachable", msg, re.MULTILINE) is None:
             self.fail(msg)
         pass
    
     
-    def test002_bw_aa(self):
+    def test_bw_aa_30MbExpected(self):
         rc, msg, bw_mb = bw("aa")
         # the link has packet loss, so a lower bw is expected
-        if rc != 0 or bw_mb < 0.2 or bw_mb > 40:
+        if rc != 0 or bw_mb < 0.1 or bw_mb > 30:
             self.fail(msg)
         pass
 
 
-    def test002_bw_cc(self):
+    def test_bw_cc_100MbExpected(self):
         rc, msg, bw_mb = bw("cc")
-        if rc != 0 or bw_mb < 80 or bw_mb > 110:
+        if rc != 0 or bw_mb < 60 or bw_mb > 110:
             self.fail(msg)
         pass
 
 
-    def test002_bw_dd(self):
+    def test_bw_dd_100MbExpected(self):
         rc, msg, bw_mb = bw("dd")
-        if rc != 0 or bw_mb < 80 or bw_mb > 110:
+        if rc != 0 or bw_mb < 60 or bw_mb > 110:
             self.fail(msg)
         pass
 
@@ -173,7 +175,7 @@ class MyCommand(object):
         return self._process.returncode
 
 
-def ping(host, count=10):
+def ping(host, count=30):
     cmd = MyCommand("ping -i 0.2 -c " + str(count) + " " + host)
     cmd.run()
     if cmd.get_exit_code() != 0:
@@ -191,7 +193,7 @@ def ping(host, count=10):
 
 
 def bw(host):
-    cmd = MyCommand("iperf -i 120 -t 30 -f m -c " + host)
+    cmd = MyCommand("iperf -i 120 -t 60 -f m -c " + host)
     cmd.run()
     if cmd.get_exit_code() != 0:
         return cmd.get_exit_code(), cmd.get_outerr(), 0
@@ -213,7 +215,7 @@ def bw(host):
 if __name__ == '__main__':
     logging.basicConfig(stream=sys.stderr)
     logging.getLogger(__name__).setLevel(logging.DEBUG)
-    suite = unittest.TestLoader().loadTestsFromTestCase(Tests)
+    suite = unittest.TestLoader().loadTestsFromTestCase(Test002)
     unittest.TextTestRunner(verbosity=2).run(suite)
 
 
