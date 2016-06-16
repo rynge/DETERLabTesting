@@ -1,0 +1,18 @@
+name: bb
+display: Node bb Agent
+description: A test agent
+execute: thread
+mainfile: bb.py
+inherits:
+   - DispatchAgent
+
+methods:
+   - name: test001containers
+     help: Runs a test
+     args: []
+
+variables:
+   - name: report_dir
+     help: the full path of where to write the test reports
+     type: string
+
