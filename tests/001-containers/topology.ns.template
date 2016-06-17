@@ -15,19 +15,19 @@ tb-set-link-loss $link0 0.10
 set lan0 [$ns make-lan "$control $bb $cc $dd" 100Mb 0ms]
 
 tb-set-node-os $control test-base-20160419
-tb-set-node-startcmd $control "sudo python /share/magi/current/magi_bootstrap.py"
+tb-set-node-startcmd $control "sudo /users/[[DETER_USER]]/DETERLabTesting/bootstrap"
 
 tb-set-node-os $aa test-base-20160419
-tb-set-node-startcmd $aa "sudo python /share/magi/current/magi_bootstrap.py"
+tb-set-node-startcmd $aa "sudo /users/[[DETER_USER]]/DETERLabTesting/bootstrap"
 
 tb-set-node-os $bb test-base-20160419
-tb-set-node-startcmd $bb "sudo python /share/magi/current/magi_bootstrap.py"
+tb-set-node-startcmd $bb "sudo /users/[[DETER_USER]]/DETERLabTesting/bootstrap"
 
 tb-set-node-os $cc test-base-20160419
-tb-set-node-startcmd $cc "sudo python /share/magi/current/magi_bootstrap.py"
+tb-set-node-startcmd $cc "sudo /users/[[DETER_USER]]/DETERLabTesting/bootstrap"
 
 tb-set-node-os $dd test-base-20160419
-tb-set-node-startcmd $dd "sudo python /share/magi/current/magi_bootstrap.py"
+tb-set-node-startcmd $dd "sudo /users/[[DETER_USER]]/DETERLabTesting/bootstrap"
 
 $ns rtproto Static
 

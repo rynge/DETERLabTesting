@@ -4,15 +4,15 @@ node {
    git url: 'https://github.com/rynge/DETERLabTesting.git'
    sh 'git clean -fdx'
 
-   // 001
-   stage '001'
-   sh "./run-test mrynge pegasus 001"
-   step([$class: 'JUnitResultArchiver', keepLongStdio: true, testResults: 'reports/001/*.xml'])
-   
    // 001-containers
    stage '001-containers'
    sh "./run-test mrynge pegasus 001-containers"
    step([$class: 'JUnitResultArchiver', keepLongStdio: true, testResults: 'reports/001-containers/*.xml'])
+   
+   // 001
+   stage '001'
+   sh "./run-test mrynge pegasus 001"
+   step([$class: 'JUnitResultArchiver', keepLongStdio: true, testResults: 'reports/001/*.xml'])
    
    // 002
    stage '002'

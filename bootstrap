@@ -1,0 +1,16 @@
+#!/bin/bash
+
+OPTS="-q -y --allow-unauthenticated -o Dpkg::Options::=--force-confold -o apt-get::Ignore-Trust-Violations=true"
+
+# let debconf know this is noninteractive
+export DEBIAN_FRONTEND=noninteractive
+
+# fix previous configuration problems
+dpkg --configure -a --force-confold </dev/null
+
+apt-get $OPTS update
+
+apt-get $OPTS install iperf python-xmlrunner
+
+/share/magi/current/magi_bootstrap.py
+
