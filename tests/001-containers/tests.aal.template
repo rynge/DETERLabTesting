@@ -53,7 +53,7 @@ eventstreams:
         args: {}
       
       - type: trigger
-        triggers: [{event: test001_complete}]
+        triggers: [{event: test001containers_complete}]
       
       - type: event
         agent: peers_agent 
