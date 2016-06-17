@@ -2,8 +2,11 @@ tests/001/agents/*.tar.gz
 tests/001/tests.aal
 tests/001-containers/agents/*.tar.gz
 tests/001-containers/tests.aal
+tests/001-containers/topology.ns
 tests/002/agents/*.tar.gz
 tests/002/tests.aal
+tests/003/agents/*.tar.gz
+tests/003/tests.aal
 
 reports
 

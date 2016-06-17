@@ -59,7 +59,7 @@ fi
 
 # do we need to wait for things to settle down?
 echo "Waiting for topology to be fully set up..."
-sleep 4m
+sleep 8m
 
 # get some basic exp info
 echo
