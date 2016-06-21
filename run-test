@@ -52,14 +52,18 @@ echo "Deploying topology..."
 if (echo "$TEST" | grep "container") >/dev/null 2>&1; then
     # containerized experiment
     $DETER_SSH ". .profile && cd DETERLabTesting/tests/$TEST && /share/containers/containerize.py $DETER_PROJECT test-$TEST topology.ns && swapexp -w $DETER_PROJECT test-$TEST in"
+    
+    # do we need to wait for things to settle down?
+    echo "Waiting for topology to be fully set up..."
+    sleep 10m
 else
     # normal experiment
     $DETER_SSH ". .profile && cd DETERLabTesting/tests/$TEST && startexp -N -w -i -a 120 -l 30 -E 'DeterLab validation test $TEST' -p $DETER_PROJECT -e test-$TEST topology.ns"
-fi
 
-# do we need to wait for things to settle down?
-echo "Waiting for topology to be fully set up..."
-sleep 10m
+    # do we need to wait for things to settle down?
+    echo "Waiting for topology to be fully set up..."
+    sleep 5m
+fi
 
 # get some basic exp info
 echo

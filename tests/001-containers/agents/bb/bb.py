@@ -96,7 +96,7 @@ class Test001Containers(unittest.TestCase):
     
     def test_reachability_outside(self):
         rc, msg, loss = ping("128.9.128.127")
-        if re.search("Destination Host Unreachable", msg, re.MULTILINE) is None:
+        if re.search("Destination Host Unreachable|Network is unreachable", msg, re.MULTILINE) is None:
             self.fail(msg)
         pass
    
@@ -116,7 +116,7 @@ class Test001Containers(unittest.TestCase):
         pass
 
 
-    def test_bw_dd_MbExpected(self):
+    def test_bw_dd_100MbExpected(self):
         rc, msg, bw_mb = bw("dd")
         if rc != 0 or bw_mb < 80 or bw_mb > 110:
             self.fail(msg)
