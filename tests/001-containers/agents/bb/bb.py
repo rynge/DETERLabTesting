@@ -18,6 +18,8 @@ try:
 except ImportError:
     import unittest
 
+import DeterLabTesting
+
 
 # allow the test to be run by hand for development
 if __name__ != '__main__':
@@ -49,7 +51,7 @@ if __name__ != '__main__':
             try:
                 stream = StringIO.StringIO()
                 suite = unittest.TestLoader().loadTestsFromTestCase(Test001Containers)
-                xmlrunner.XMLTestRunner(stream=stream, output=self.report_dir).run(suite)
+                xmlrunner.XMLTestRunner(stream=stream, verbosity=2, output=self.report_dir).run(suite)
                 stream.seek(0)
                 log.info(stream.read())
             except Exception, err:
@@ -213,7 +215,6 @@ def bw(host):
 
 # allow the test to be run by hand for development
 if __name__ == '__main__':
-    logging.basicConfig(stream=sys.stderr)
     logging.getLogger(__name__).setLevel(logging.DEBUG)
     suite = unittest.TestLoader().loadTestsFromTestCase(Test001Containers)
     unittest.TextTestRunner(verbosity=2).run(suite)

@@ -25,7 +25,10 @@ done
 for TID in `cd tests && ls`; do
     cd $TOP_DIR/tests/$TID/agents
     for AGENT in `ls | grep -v tar.gz`; do
-        (cd $AGENT; tar czf ../$AGENT.tar.gz .)
+        (cd $AGENT && \
+         cp -r ../../../../common/DeterLabTesting . && \
+         tar czf ../$AGENT.tar.gz . && \
+         rm -rf DeterLabTesting)
     done
 done
 
@@ -71,7 +74,7 @@ $DETER_SSH ". .profile && cd DETERLabTesting/tests/$TEST && expinfo -a $DETER_PR
 
 # run the orchestrator run
 echo
-$DETER_SSH "ssh $DETER_SSH_OPTS control.test-$TEST.pegasus \"cd DETERLabTesting/tests/$TEST && timeout 10m /share/magi/current/magi_orchestrator.py --nocolor --project pegasus --experiment test-$TEST --events tests.aal\"" || true
+$DETER_SSH "ssh $DETER_SSH_OPTS control.test-$TEST.pegasus \"cd DETERLabTesting/tests/$TEST && timeout 15m /share/magi/current/magi_orchestrator.py --nocolor --project pegasus --experiment test-$TEST --events tests.aal\"" || true
 
 # get the results
 scp -r $DETER_USER@$DETER_USERS_HOST:DETERLabTesting/reports/* reports/
