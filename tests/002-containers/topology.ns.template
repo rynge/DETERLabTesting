@@ -1,0 +1,31 @@
+# This is a simple ns script. Comments start with #.
+set ns [new Simulator]                 
+source tb_compat.tcl
+
+# we need a control host to anchor the tests
+set control [$ns node]
+set aa [$ns node]
+set bb [$ns node]
+set cc [$ns node]
+set dd [$ns node]
+
+set link0 [$ns duplex-link $aa $bb 30Mb 50ms DropTail]
+tb-set-link-loss $link0 0.10
+
+set lan0 [$ns make-lan "$control $bb $cc $dd" 100Mb 10ms]
+
+tb-set-node-startcmd $control "sudo /users/[[DETER_USER]]/DETERLabTesting/bootstrap"
+
+tb-set-node-startcmd $aa "sudo /users/[[DETER_USER]]/DETERLabTesting/bootstrap"
+
+tb-set-node-startcmd $bb "sudo /users/[[DETER_USER]]/DETERLabTesting/bootstrap"
+
+tb-set-node-startcmd $cc "sudo /users/[[DETER_USER]]/DETERLabTesting/bootstrap"
+
+tb-set-node-startcmd $dd "sudo /users/[[DETER_USER]]/DETERLabTesting/bootstrap"
+
+$ns rtproto Static
+
+# Go!
+$ns run
+

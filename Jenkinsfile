@@ -19,10 +19,20 @@ node {
    sh "./run-test mrynge pegasus 002"
    step([$class: 'JUnitResultArchiver', keepLongStdio: true, testResults: 'reports/002/*.xml'])
    
+   // 002-containers
+   stage '002-containers'
+   sh "./run-test mrynge pegasus 002-containers"
+   step([$class: 'JUnitResultArchiver', keepLongStdio: true, testResults: 'reports/002-containers/*.xml'])
+   
    // 003
    stage '003'
    sh "./run-test mrynge pegasus 003"
    step([$class: 'JUnitResultArchiver', keepLongStdio: true, testResults: 'reports/003/*.xml'])
+   
+   // 003-containers
+   stage '003-containers'
+   sh "./run-test mrynge pegasus 003-containers"
+   step([$class: 'JUnitResultArchiver', keepLongStdio: true, testResults: 'reports/003-containers/*.xml'])
 
 }
 

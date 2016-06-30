@@ -1,0 +1,17 @@
+name: peers
+display: Peer nodes Agent
+description: A test agent
+execute: thread
+mainfile: peers.py
+inherits:
+   - DispatchAgent
+
+methods:
+   - name: start_iperf
+     help: Starts an iperf server for bw tests
+     args: []
+
+   - name: stop_iperf
+     help: Stops an iperf server
+     args: []
+
