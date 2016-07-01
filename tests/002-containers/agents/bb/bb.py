@@ -102,7 +102,7 @@ class Test002Containers(unittest.TestCase):
     def test_reachability_outside(self):
         dtl = DeterLabTesting.DeterLabTesting()
         rc, msg, loss = dtl.ping("128.9.128.127")
-        if re.search("Destination Host Unreachable", msg, re.MULTILINE) is None:
+        if re.search("Destination Host Unreachable|Network is unreachable", msg, re.MULTILINE) is None:
             self.fail(msg)
         pass
    
